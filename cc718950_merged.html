@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>算个卦叭～</title>
+  <style>
+    :root {
+      --mint-green: #a8e6cf;
+      --light-mint: #dcedc1;
+      --pale-green: #e8f5e9;
+      --soft-teal: #80cbc4;
+      --dark-teal: #00897b;
+      --text-dark: #263238;
+      --text-medium: #455a64;
+      --shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    body {
+      font-family: "Noto Serif SC", "宋体", serif;
+      background: linear-gradient(135deg, var(--pale-green), var(--light-mint));
+      text-align: center;
+      padding: 20px;
+      color: var(--text-dark);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.3);
+      position: relative;
+    }
+    
+    h1 {
+      color: var(--dark-teal);
+      margin-bottom: 30px;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h1:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--mint-green), var(--dark-teal));
+      border-radius: 3px;
+    }
+    
+    .yao {
+      font-size: 24px;
+      margin: 8px 0;
+      padding: 8px;
+      background-color: rgba(168, 230, 207, 0.2);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .yao:hover {
+      background-color: rgba(168, 230, 207, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .yang { 
+      color: #e53935;
+      font-weight: bold;
+    }
+    
+    .yin { 
+      color: var(--dark-teal);
+      font-weight: bold;
+    }
+    
+    button {
+      font-size: 18px;
+      padding: 12px 28px;
+      margin: 25px auto;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--mint-green), var(--soft-teal));
+      border: none;
+      border-radius: 50px;
+      color: var(--text-dark);
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      background: linear-gradient(135deg, var(--soft-teal), var(--mint-green));
+    }
+    
+    button:active {
+      transform: translateY(1px);
+    }
+    
+    .svg-box {
+      display: inline-block;
+      margin: 15px;
+      padding: 15px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    
+    .svg-box:hover {
+      transform: scale(1.05);
+    }
+    
+    .gua-container {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    
+    .gua-header {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: var(--dark-teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .gua-content {
+      text-align: left;
+      padding: 0 15px;
+    }
+    
+    .shangshang {
+      color: #d32f2f;
+      background-color: rgba(211, 47, 47, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .zhongshang {
+      color: #fb8c00;
+      background-color: rgba(251, 140, 0, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .zhongxia {
+      color: #7b1fa2;
+      background-color: rgba(123, 31, 162, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .xiaxia {
+      color: #455a64;
+      background-color: rgba(69, 90, 100, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--soft-teal), transparent);
+      margin: 25px 0;
+    }
+    
+    .gua-name {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 15px 0;
+      color: var(--dark-teal);
+    }
+    
+    .bagua-name {
+      font-size: 18px;
+      color: var(--text-medium);
+      margin-top: 5px;
+    }
+    
+    .yao-change {
+      font-size: 14px;
+      color: #e53935;
+      font-style: italic;
+    }
+    
+    .language-selector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--soft-teal);
+      background-color: white;
+      color: var(--text-dark);
+      font-family: "Noto Serif SC", serif;
+      cursor: pointer;
+      outline: none;
+    }
+    
+    .language-selector:focus {
+      box-shadow: 0 0 0 2px rgba(128, 203, 196, 0.3);
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      .yao {
+        font-size: 20px;
+      }
+      
+      .language-selector {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <h1 id="title">算个卦叭～</h1>
+    <select class="language-selector" id="languageSelector" onchange="changeLanguage()">
+      <option value="zh">中文</option>
+      <option value="en">English</option>
+      <option value="ja">日本語</option>
+      <option value="ko">한국어</option>
+    </select>
+    <button onclick="shakeGua()" id="shakeButton">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M12 18V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4.92999 4.92999L7.75999 7.75999" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M16.24 16.24L19.07 19.07" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M2 12H6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M18 12H22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4.92999 19.07L7.75999 16.24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M16.24 7.75999L19.07 4.92999" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span id="shakeText">摇卦</span>
+    </button>
+    <div id="gua"></div>
+  </div>
+
+  <script>
+    // 当前语言设置
+    let currentLanguage = 'zh';
+    
+    // 多语言文本
+    const translations = {
+      zh: {
+        title: "算个卦叭～",
+        shakeButton: "摇卦",
+        sixYao: "六爻",
+        originalGua: "本卦",
+        changedGua: "之卦",
+        guaExplanation: "卦辞",
+        yaoExplanation: "爻辞",
+        upperGua: "上卦",
+        lowerGua: "下卦",
+        changingLine: "(变爻)",
+        level: {
+          shangshang: "上上",
+          zhongshang: "中上",
+          zhongxia: "中下",
+          xiaxia: "下下"
+        }
+      },
+      en: {
+        title: "I Ching Divination",
+        shakeButton: "Cast Hexagram",
+        sixYao: "Six Lines",
+        originalGua: "Original Hexagram",
+        changedGua: "Changed Hexagram",
+        guaExplanation: "Hexagram Statement",
+        yaoExplanation: "Line Statements",
+        upperGua: "Upper Trigram",
+        lowerGua: "Lower Trigram",
+        changingLine: "(Changing Line)",
+        level: {
+          shangshang: "Supreme Luck",
+          zhongshang: "Good Luck",
+          zhongxia: "Average Luck",
+          xiaxia: "Bad Luck"
+        }
+      },
+      ja: {
+        title: "易経占い",
+        shakeButton: "占う",
+        sixYao: "六爻",
+        originalGua: "本卦",
+        changedGua: "変卦",
+        guaExplanation: "卦辞",
+        yaoExplanation: "爻辞",
+        upperGua: "上卦",
+        lowerGua: "下卦",
+        changingLine: "(変爻)",
+        level: {
+          shangshang: "大吉",
+          zhongshang: "中吉",
+          zhongxia: "小凶",
+          xiaxia: "大凶"
+        }
+      },
+      ko: {
+        title: "주역 점",
+        shakeButton: "점 치기",
+        sixYao: "육효",
+        originalGua: "본괘",
+        changedGua: "변괘",
+        guaExplanation: "괘사",
+        yaoExplanation: "효사",
+        upperGua: "상괘",
+        lowerGua: "하괘",
+        changingLine: "(변효)",
+        level: {
+          shangshang: "상상길",
+          zhongshang: "중길",
+          zhongxia: "중흉",
+          xiaxia: "대흉"
+        }
+      }
+    };
+
+    // 多语言卦名
+    const guaTranslations = {
+  en: {
+    "乾为天": "The Creative",
+    "坤为地": "The Receptive",
+    "水雷屯": "Difficulty at the Beginning",
+    "山水蒙": "Youthful Folly",
+    "水天需": "Waiting",
+    "天水讼": "Conflict",
+    "地水师": "The Army",
+    "水地比": "Holding Together",
+    "风天小畜": "Small Taming",
+    "天泽履": "Treading",
+    "地天泰": "Peace",
+    "天地否": "Stagnation",
+    "天火同人": "Fellowship with Men",
+    "火天大有": "Great Possession",
+    "地山谦": "Modesty",
+    "雷地豫": "Enthusiasm",
+    "泽雷随": "Following",
+    "山风蛊": "Work on the Decayed",
+    "地泽临": "Approach",
+    "风地观": "Contemplation",
+    "火雷噬嗑": "Biting Through",
+    "山火贲": "Grace",
+    "山地剥": "Splitting Apart",
+    "地雷复": "Return",
+    "天雷无妄": "Innocence",
+    "山天大畜": "Great Taming",
+    "山雷颐": "Nourishment",
+    "泽风大过": "Preponderance of the Great",
+    "坎为水": "The Abysmal",
+    "离为火": "The Clinging",
+    "泽山咸": "Influence",
+    "雷风恒": "Duration",
+    "天山遁": "Retreat",
+    "雷天大壮": "Great Power",
+    "火地晋": "Progress",
+    "地火明夷": "Darkening of the Light",
+    "风火家人": "The Family",
+    "火泽睽": "Opposition",
+    "水山蹇": "Obstruction",
+    "雷水解": "Deliverance",
+    "山泽损": "Decrease",
+    "风雷益": "Increase",
+    "泽天夬": "Breakthrough",
+    "天风姤": "Coming to Meet",
+    "泽地萃": "Gathering Together",
+    "地风升": "Pushing Upward",
+    "泽火革": "Revolution",
+    "火风鼎": "The Cauldron",
+    "震为雷": "The Arousing",
+    "艮为山": "Keeping Still",
+    "风山渐": "Development",
+    "雷泽归妹": "The Marrying Maiden",
+    "雷火丰": "Abundance",
+    "火山旅": "The Wanderer",
+    "巽为风": "The Gentle",
+    "兑为泽": "The Joyous",
+    "风水涣": "Dispersion",
+    "水泽节": "Limitation",
+    "风泽中孚": "Inner Truth",
+    "雷山小过": "Preponderance of the Small",
+    "水火既济": "After Completion",
+    "火水未济": "Before Completion",
+  },
+  ja: {
+    "乾为天": "乾",
+    "坤为地": "坤",
+    "水雷屯": "屯",
+    "山水蒙": "蒙",
+    "水天需": "需",
+    "天水讼": "訟",
+    "地水师": "師",
+    "水地比": "比",
+    "风天小畜": "小畜",
+    "天泽履": "履",
+    "地天泰": "泰",
+    "天地否": "否",
+    "天火同人": "同人",
+    "火天大有": "大有",
+    "地山谦": "謙",
+    "雷地豫": "豫",
+    "泽雷随": "随",
+    "山风蛊": "蠱",
+    "地泽临": "臨",
+    "风地观": "観",
+    "火雷噬嗑": "噬嗑",
+    "山火贲": "賁",
+    "山地剥": "剥",
+    "地雷复": "復",
+    "天雷无妄": "无妄",
+    "山天大畜": "大畜",
+    "山雷颐": "頤",
+    "泽风大过": "大過",
+    "坎为水": "坎",
+    "离为火": "離",
+    "泽山咸": "咸",
+    "雷风恒": "恒",
+    "天山遁": "遁",
+    "雷天大壮": "大壮",
+    "火地晋": "晋",
+    "地火明夷": "明夷",
+    "风火家人": "家人",
+    "火泽睽": "睽",
+    "水山蹇": "蹇",
+    "雷水解": "解",
+    "山泽损": "損",
+    "风雷益": "益",
+    "泽天夬": "夬",
+    "天风姤": "姤",
+    "泽地萃": "萃",
+    "地风升": "升",
+    "泽火革": "革",
+    "火风鼎": "鼎",
+    "震为雷": "震",
+    "艮为山": "艮",
+    "风山渐": "漸",
+    "雷泽归妹": "帰妹",
+    "雷火丰": "豊",
+    "火山旅": "旅",
+    "巽为风": "巽",
+    "兑为泽": "兌",
+    "风水涣": "渙",
+    "水泽节": "節",
+    "风泽中孚": "中孚",
+    "雷山小过": "小過",
+    "水火既济": "既済",
+    "火水未济": "未済",
+  },
+  ko: {
+    "乾为天": "건",
+    "坤为地": "곤",
+    "水雷屯": "둔",
+    "山水蒙": "몽",
+    "水天需": "수",
+    "天水讼": "송",
+    "地水师": "사",
+    "水地比": "비",
+    "风天小畜": "소축",
+    "天泽履": "리",
+    "地天泰": "태",
+    "天地否": "비",
+    "天火同人": "동인",
+    "火天大有": "대유",
+    "地山谦": "겸",
+    "雷地豫": "예",
+    "泽雷随": "수",
+    "山风蛊": "고",
+    "地泽临": "임",
+    "风地观": "관",
+    "火雷噬嗑": "서합",
+    "山火贲": "비",
+    "山地剥": "박",
+    "地雷复": "복",
+    "天雷无妄": "무망",
+    "山天大畜": "대축",
+    "山雷颐": "이",
+    "泽风大过": "대과",
+    "坎为水": "감",
+    "离为火": "리",
+    "泽山咸": "함",
+    "雷风恒": "항",
+    "天山遁": "돈",
+    "雷天大壮": "대장",
+    "火地晋": "진",
+    "地火明夷": "명이",
+    "风火家人": "가인",
+    "火泽睽": "규",
+    "水山蹇": "건",
+    "雷水解": "해",
+    "山泽损": "손",
+    "风雷益": "익",
+    "泽天夬": "쾌",
+    "天风姤": "구",
+    "泽地萃": "췌",
+    "地风升": "승",
+    "泽火革": "혁",
+    "火风鼎": "정",
+    "震为雷": "진",
+    "艮为山": "간",
+    "风山渐": "점",
+    "雷泽归妹": "귀매",
+    "雷火丰": "풍",
+    "火山旅": "려",
+    "巽为风": "손",
+    "兑为泽": "태",
+    "风水涣": "환",
+    "水泽节": "절",
+    "风泽中孚": "중부",
+    "雷山小过": "소과",
+    "水火既济": "기제",
+    "火水未济": "미제",
+  },
+};
+
+    // 多语言卦辞解释
+    const guaExplanations = {
+      "乾为天": {
+        zh: {
+          level: "上上",
+          guaci: "元，亨，利，贞。",
+          yaoci: [
+            "初九：潜龙，勿用。",
+            "九二：见龙在田，利见大人。",
+            "九三：君子终日乾乾，夕惕若，厉无咎。",
+            "九四：或跃在渊，无咎。",
+            "九五：飞龙在天，利见大人。",
+            "上九：亢龙有悔。"
+          ]
+        },
+        en: {
+          level: "Supreme Luck",
+          guaci: "Originating, penetrating, advantageous, steadfast.",
+          yaoci: [
+            "Nine at the beginning: A submerged dragon. Do not act.",
+            "Nine in the second place: A dragon appearing in the field. It is advantageous to see the great person.",
+            "Nine in the third place: The superior man is active and vigilant all the day, and in the evening still careful. There will be danger, but no error.",
+            "Nine in the fourth place: Wavering over the depths. No error.",
+            "Nine in the fifth place: A dragon flying in the sky. It is advantageous to see the great person.",
+            "Nine at the top: A proud dragon will have cause to repent."
+          ]
+        },
+        ja: {
+          level: "大吉",
+          guaci: "元、亨、利、貞。",
+          yaoci: [
+            "初九：潜龍、用うるなかれ。",
+            "九二：田に龍を見る、大人を見るに利し。",
+            "九三：君子終日乾乾、夕べに惕若し、厲しくして咎なし。",
+            "九四：或は淵に躍るも、咎なし。",
+            "九五：天に飛龍す、大人を見るに利し。",
+            "上九：亢龍悔い有り。"
+          ]
+        },
+        ko: {
+          level: "상상길",
+          guaci: "원, 형, 이, 정.",
+          yaoci: [
+            "초구: 잠룡, 물용.",
+            "구이: 전에 용을 보니, 대인을 보니 이롭다.",
+            "구삼: 군자 종일 건건, 석석하게 하여 위태로우나 허물이 없다.",
+            "구사: 혹 연못에 뛰어들어도 허물이 없다.",
+            "구오: 하늘에 비룡이니, 대인을 보니 이롭다.",
+            "상구: 강룡에 뉘우침이 있다."
+          ]
+        }
+      },
+      "坤为地": {
+        zh: {
+          level: "上上",
+          guaci: "元，亨，利，牝马之贞。",
+          yaoci: [
+            "初六：履霜，坚冰至。",
+            "六二：直方大，不习无不利。",
+            "六三：含章可贞。或从王事，无成有终。",
+            "六四：括囊，无咎无誉。",
+            "六五：黄裳，元吉。",
+            "上六：龙战于野，其血玄黄。"
+          ]
+        },
+        en: {
+          level: "Supreme Luck",
+          guaci: "Originating, penetrating, advantageous, steadfast like a mare.",
+          yaoci: [
+            "Six at the beginning: Treading on frost. Solid ice will come.",
+            "Six in the second place: Straight, square, great. Without purpose, yet nothing remains unfurthered.",
+            "Six in the third place: Containing the signs, one may be steadfast. If you follow the king's business, without claiming success, you will have a conclusion.",
+            "Six in the fourth place: A tied-up sack. No blame, no praise.",
+            "Six in the fifth place: A yellow lower garment. Supreme good fortune.",
+            "Six at the top: Dragons fight in the meadow. Their blood is black and yellow."
+          ]
+        },
+        ja: {
+          level: "大吉",
+          guaci: "元、亨、利、牝馬の貞。",
+          yaoci: [
+            "初六：霜を履みて堅冰至る。",
+            "六二：直く方く大なり、習わずして不利なし。",
+            "六三：章を含みて貞うべし。或は王事に従い、成ることなくして終わり有り。",
+            "六四：囊を括れば、咎なく誉れなし。",
+            "六五：黄裳、元吉。",
+            "上六：野に龍戦う、その血玄黄。"
+          ]
+        },
+        ko: {
+          level: "상상길",
+          guaci: "원, 형, 이, 암말의 정.",
+          yaoci: [
+            "초육: 서리를 밟으니, 단단한 얼음이 온다.",
+            "육이: 곧고 방정하고 크니, 익히지 않아도 불리함이 없다.",
+            "육삼: 아름다움을 간직하면 정해질 수 있다. 혹은 왕의 일을 따르나, 성취함이 없어도 끝이 있다.",
+            "육사: 주머니를 묶으면, 허물도 없고 칭찬도 없다.",
+            "육오: 노란 치마, 크게 길하다.",
+            "상육: 들판에서 용이 싸우니, 그 피는 검고 누렇다."
+          ]
+        }
+      },
+      "水雷屯": {
+        zh: {
+          level: "中下",
+          guaci: "元，亨，利，贞。勿用有攸往，利建侯。",
+          yaoci: [
+            "初九：磐桓，利居贞，利建侯。",
+            "六二：屯如邅如，乘马班如。匪寇婚媾，女子贞不字，十年乃字。",
+            "六三：即鹿无虞，惟入于林中，君子几不如舍，往吝。",
+            "六四：乘马班如，求婚媾，往吉，无不利。",
+            "九五：屯其膏，小贞吉，大贞凶。",
+            "上六：乘马班如，泣血涟如。"
+          ]
+        },
+        en: {
+          level: "Average Luck",
+          guaci: "Originating, penetrating, advantageous, steadfast. Do not use it to have somewhere to go. Advantageous to establish feudal lords.",
+          yaoci: [
+            "Nine at the beginning: Hesitating and lingering. Advantageous to be steadfast and to establish feudal lords.",
+            "Six in the second place: Difficulty upon difficulty. Horses and chariots are arrayed. They are not robbers; they come to marry. The maiden is steadfast and does not give herself. After ten years she gives herself.",
+            "Six in the third place: Pursuing deer without a forester, one only enters into the midst of the forest. The superior man, discerning, prefers to let it go. To go on brings regret.",
+            "Six in the fourth place: Horses and chariots are arrayed. Seeking marriage. To go on is auspicious. Nothing is not advantageous.",
+            "Nine in the fifth place: Difficulty in his blessings. Small steadfastness is auspicious; great steadfastness is ominous.",
+            "Six at the top: Horses and chariots are arrayed. Weeping blood flows in streams."
+          ]
+        },
+        ja: {
+          level: "小凶",
+          guaci: "元、亨、利、貞。用うるなかれ攸に往く有るを、侯を建つるに利し。",
+          yaoci: [
+            "初九：磐桓、貞に居るに利し、侯を建つるに利し。",
+            "六二：屯如邅如、馬に乗り班如。寇に非ず婚媾す、女子貞にして字さず、十年にして乃ち字す。",
+            "六三：即ち鹿にして虞無く、惟だ林中に入る、君子幾くんぞ舍つるに如かず、往けば吝し。",
+            "六四：馬に乗り班如、婚媾を求め、往けば吉、不利なし。",
+            "九五：其の膏を屯む、小貞は吉、大貞は凶。",
+            "上六：馬に乗り班如、血を泣いて漣如。"
+          ]
+        },
+        ko: {
+          level: "중흉",
+          guaci: "원, 형, 이, 정. 쓸 데가 있어 감이 없어야 하니, 제후를 세우는 데 이롭다.",
+          yaoci: [
+            "초구: 반환, 거정함이 이롭고, 제후를 세우는 데 이롭다.",
+            "육이: 둔여전여, 말을 타고 반여. 도적이 아니고 혼구하니, 여자 정하여 시집가지 않고, 십 년 만에야 시집간다.",
+            "육삼: 곧 사슴을 쫓으나 관리가 없어, 오직 숲속으로 들어가니, 군자는 거의 버리는 것만 못하니, 가면 흉하다.",
+            "육사: 말을 타고 반여, 혼구를 구하니, 가면 길하고 불리함이 없다.",
+            "구오: 그 기름을 쌓아두니, 작은 정은 길하고, 큰 정은 흉하다.",
+            "상육: 말을 타고 반여, 피를 흘리며 울고 있다."
+          ]
+        }
+      },
+      "山水蒙": {
+        zh: {
+          level: "中下",
+          guaci: "亨。匪我求童蒙，童蒙求我。初噬告，再三渎，渎则不告。利贞。",
+          yaoci: [
+            "初六：发蒙，利用刑人，用说桎梏，以往吝。",
+            "九二：包蒙吉；纳妇吉；子克家。",
+            "六三：勿用取女；见金夫，不有躬，无攸利。",
+            "六四：困蒙，吝。",
+            "六五：童蒙，吉。",
+            "上九：击蒙；不利为寇，利御寇。"
+          ]
+        },
+        en: {
+          level: "Average Luck",
+          guaci: "Penetrating. It is not I who seek the youthful and simple; the youthful and simple seek me. At the first oracle I inform them. If they ask two or three times, it is importunity. If they importune, then I do not inform them. Advantageous to be steadfast.",
+          yaoci: [
+            "Six at the beginning: To develop the simple. It is advantageous to use punishment. To remove fetters and shackles. To go on brings regret.",
+            "Nine in the second place: To embrace the simple is auspicious. To take a wife is auspicious. The son is capable of the house.",
+            "Six in the third place: Do not take a woman. She sees a metal man and does not keep her person. Nothing is advantageous.",
+            "Six in the fourth place: Entangled in simplicity. Regret.",
+            "Six in the fifth place: Childlike simplicity. Auspicious.",
+            "Nine at the top: To strike the simple. It is not advantageous to be a robber; it is advantageous to resist robbers."
+          ]
+        },
+        ja: {
+          level: "小凶",
+          guaci: "亨。我に非ず童蒙を求む、童蒙我を求む。初めは噬いて告ぐ、再び三たび渎えば、渎うれば則ち告げず。貞に利し。",
+          yaoci: [
+            "初六：蒙を発く、刑人を用うるに利し、桎梏を説くを用い、往けば吝し。",
+            "九二：蒙を包めば吉、婦を納れば吉、子家に克つ。",
+            "六三：用うるなかれ女を取らんと、金夫を見、躬有らず、利する所なし。",
+            "六四：蒙に困れば、吝し。",
+            "六五：童蒙、吉。",
+            "上九：蒙を撃つ、寇たるに不利、寇を御うるに利し。"
+          ]
+        },
+        ko: {
+          level: "중흉",
+          guaci: "형. 내가 동몽을 구하는 것이 아니라, 동몽이 나를 구한다. 처음 물으면 알려주지만, 두세 번 더 묻는 것은 더럽히는 것이니, 더럽히면 알려주지 않는다. 정함에 이롭다.",
+          yaoci: [
+            "초육: 어리석음을 발휘하니, 형벌을 쓰는 데 이롭다. 차꼬와 수갑을 푸는 데 쓰니, 가면 흉하다.",
+            "구이: 어리석음을 포용하면 길하다. 아내를 들이면 길하다. 아들이 집안을 이을 수 있다.",
+            "육삼: 여자를 취하려 하지 말라. 금부(훌륭한 남자)를 보고서 자신을 지키지 못하니, 이로운 바가 없다.",
+            "육사: 어리석음에 곤란하면 흉하다.",
+            "육오: 어린아이 같은 순수함, 길하다.",
+            "상구: 어리석음을 치다. 도적이 되는 데는 이롭지 않으나, 도적을 막는 데는 이롭다."
+          ]
+        }
+      }
+////////////////
+      
+    };
+
+    // 卦的分类
+    const shangshangGua = [
+      "乾为天", "坤为地", "地天泰", "天火同人", "火天大有",
+      "地山谦", "雷地豫", "泽雷随", "山风蛊", "地泽临",
+      "风地观", "火雷噬嗑", "山火贲", "地雷复", "山天大畜",
+      "山雷颐", "泽风大过", "坎为水", "离为火", "泽山咸"
+    ];
+    
+    const zhongshangGua = [
+      "雷风恒", "天山遁", "雷天大壮", "火地晋", "风火家人",
+      "火泽睽", "水山蹇", "雷水解", "山泽损", "风雷益",
+      "泽天夬", "天风姤", "泽地萃", "地风升", "泽火革",
+      "火风鼎", "震为雷", "艮为山", "风山渐", "雷泽归妹",
+      "雷火丰", "火山旅", "巽为风", "兑为泽", "风水涣",
+      "水泽节", "风泽中孚", "雷山小过", "水火既济", "火水未济"
+    ];
+
+    const zhongxiaGua = [
+      "天地否", "天山遁", "天水讼", "天风姤", "天雷无妄",
+      "风天小畜", "水天需", "山天大畜", "雷天大壮", "泽天夬",
+      "地水师", "山水蒙", "坎为水", "风水涣", "雷水解",
+      "火水未济", "泽水困", "天水讼", "山火贲", "地火明夷"
+    ];
+
+    const xiaxiaGua = [
+      "天雷无妄", "泽雷随", "火雷噬嗑", "雷地豫", "风雷益",
+      "水雷屯", "山雷颐", "地雷复", "天风姤", "泽风大过",
+      "火风鼎", "雷风恒", "巽为风", "水风井", "山风蛊",
+      "地风升", "天水讼", "泽水困", "火水未济", "雷水解",
+      "风水涣", "坎为水", "山水蒙", "地水师", "天山遁",
+      "泽山咸", "火山旅", "雷山小过", "风山渐", "水山蹇",
+      "艮为山", "地山谦"
+    ];
+
+    const baguaNames = {
+      zh: ["坤", "艮", "坎", "巽", "震", "离", "兑", "乾"],
+      en: ["Earth", "Mountain", "Water", "Wind", "Thunder", "Fire", "Lake", "Heaven"],
+      ja: ["地", "山", "水", "風", "雷", "火", "沢", "天"],
+      ko: ["지", "산", "물", "바람", "천둥", "불", "연못", "하늘"]
+    };
+    
+    const gua64Names = ['乾为天', '坤为地', '水雷屯', '山水蒙', '水天需', '天水讼', '地水师', '水地比', '风天小畜', '天泽履', '地天泰', '天地否', '天火同人', '火天大有', '地山谦', '雷地豫', '泽雷随', '山风蛊', '地泽临', '风地观', '火雷噬嗑', '山火贲', '山地剥', '地雷复', '天雷无妄', '山天大畜', '山雷颐', '泽风大过', '坎为水', '离为火', '泽山咸', '雷风恒', '天山遁', '雷天大壮', '火地晋', '地火明夷', '风火家人', '火泽睽', '水山蹇', '雷水解', '山泽损', '风雷益', '泽天夬', '天风姤', '泽地萃', '地风升', '泽火革', '火风鼎', '震为雷', '艮为山', '风山渐', '雷泽归妹', '雷火丰', '火山旅', '巽为风', '兑为泽', '风水涣', '水泽节', '风泽中孚', '雷山小过', '水火既济', '火水未济'];
+
+    function tossThreeCoins() {
+      let heads = 0;
+      for (let i = 0; i < 3; i++) {
+        if (Math.random() < 0.5) heads++;
+      }
+      if (heads === 3) return 9;
+      if (heads === 2) return 7;
+      if (heads === 1) return 8;
+      return 6;
+    }
+
+    function yaoSymbol(val) {
+      const isYang = (val === 7 || val === 9);
+      const isOld = (val === 6 || val === 9);
+      const symbol = isYang ? "⚊⚊⚊" : "⚋⚋⚋";
+      const changingLineText = translations[currentLanguage].changingLine;
+      return `<span class="${isYang ? 'yang' : 'yin'}">${symbol}</span>${isOld ? ` <span class="yao-change">${changingLineText}</span>` : ''}`;
+    }
+
+    function yaoToBinary(val) {
+      return (val === 7 || val === 9) ? 1 : 0;
+    }
+
+    function getGuaName(yaoList) {
+      let lower = yaoList.slice(3).map(yaoToBinary).join('');
+      let upper = yaoList.slice(0, 3).map(yaoToBinary).join('');
+      let lowerIndex = parseInt(lower, 2);
+      let upperIndex = parseInt(upper, 2);
+      let guaIndex = upperIndex * 8 + lowerIndex;
+      
+      // 获取卦名翻译
+      let guaName = gua64Names[guaIndex];
+      let translatedName = guaName;
+      
+      if (currentLanguage !== 'zh' && guaTranslations[currentLanguage] && guaTranslations[currentLanguage][guaName]) {
+        translatedName = guaTranslations[currentLanguage][guaName];
+      }
+      
+      return {
+        name: guaName,
+        translatedName: translatedName,
+        upper: baguaNames[currentLanguage][upperIndex],
+        lower: baguaNames[currentLanguage][lowerIndex]
+      };
+    }
+
+    function getTransformedGua(yaoList) {
+      return yaoList.map(val => (val === 6 ? 7 : val === 9 ? 8 : val));
+    }
+
+    function drawBaguaSVG(threeYao) {
+      let svg = `<svg width="60" height="100">`;
+      for (let i = 0; i < 3; i++) {
+        const y = 20 + i * 25;
+        const val = threeYao[i];
+        const isYang = (val === 7 || val === 9);
+        if (isYang) {
+          svg += `<line x1="10" y1="${y}" x2="50" y2="${y}" stroke="${val === 9 ? '#e53935' : '#00897b'}" stroke-width="6"/>`;
+        } else {
+          svg += `<line x1="10" y1="${y}" x2="25" y2="${y}" stroke="${val === 6 ? '#00897b' : '#455a64'}" stroke-width="6"/>
+                  <line x1="35" y1="${y}" x2="50" y2="${y}" stroke="${val === 6 ? '#00897b' : '#455a64'}" stroke-width="6"/>`;
+        }
+      }
+      svg += `</svg>`;
+      return svg;
+    }
+
+    function getGuaLevel(guaName) {
+      if (shangshangGua.includes(guaName)) return { level: translations[currentLanguage].level.shangshang, class: "shangshang" };
+      if (zhongshangGua.includes(guaName)) return { level: translations[currentLanguage].level.zhongshang, class: "zhongshang" };
+      if (zhongxiaGua.includes(guaName)) return { level: translations[currentLanguage].level.zhongxia, class: "zhongxia" };
+      return { level: translations[currentLanguage].level.xiaxia, class: "xiaxia" };
+    }
+
+    function changeLanguage() {
+      const selector = document.getElementById('languageSelector');
+      currentLanguage = selector.value;
+      
+      // 更新界面文本
+      document.getElementById('title').textContent = translations[currentLanguage].title;
+      document.getElementById('shakeText').textContent = translations[currentLanguage].shakeButton;
+      
+      // 如果已有卦象显示，重新生成
+      if (document.getElementById('gua').innerHTML !== '') {
+        shakeGua();
+      }
+    }
+
+    function shakeGua() {
+      const guaDiv = document.getElementById("gua");
+      guaDiv.innerHTML = "";
+      
+      // 随机摇卦
+      let yaoList = [];
+      for (let i = 0; i < 6; i++) yaoList.unshift(tossThreeCoins());
+      let guaInfo = getGuaName(yaoList);
+      let guaLevel = getGuaLevel(guaInfo.name);
+
+      // 显示六爻
+      const yaoContainer = document.createElement("div");
+      yaoContainer.className = "gua-container";
+      yaoContainer.innerHTML = `<div class="gua-header">${translations[currentLanguage].sixYao}</div>`;
+      
+      const yaoContent = document.createElement("div");
+      yaoContent.className = "gua-content";
+      yaoList.forEach((val, i) => {
+        yaoContent.innerHTML += `<div class="yao">${6 - i} ${yaoSymbol(val)}</div>`;
+      });
+      yaoContainer.appendChild(yaoContent);
+      guaDiv.appendChild(yaoContainer);
+
+      // 显示本卦
+      const benGuaContainer = document.createElement("div");
+      benGuaContainer.className = "gua-container";
+      
+      benGuaContainer.innerHTML = `
+        <div class="gua-header">
+          <span>${translations[currentLanguage].originalGua}</span>
+          <span class="${guaLevel.class}">${guaLevel.level}</span>
+        </div>
+        <div style="text-align: center;">
+          <div class="gua-name">${guaInfo.translatedName}</div>
+          <div class="bagua-name">（${translations[currentLanguage].upperGua}：${guaInfo.upper}，${translations[currentLanguage].lowerGua}：${guaInfo.lower}）</div>
+          <div class="svg-box">${drawBaguaSVG(yaoList.slice(0,3))}<br>${guaInfo.upper}</div>
+          <div class="svg-box">${drawBaguaSVG(yaoList.slice(3))}<br>${guaInfo.lower}</div>
+        </div>
+      `;
+      guaDiv.appendChild(benGuaContainer);
+
+      // 显示之卦
+      const zhiList = getTransformedGua(yaoList);
+      const zhiInfo = getGuaName(zhiList);
+      const zhiLevel = getGuaLevel(zhiInfo.name);
+      
+      const zhiGuaContainer = document.createElement("div");
+      zhiGuaContainer.className = "gua-container";
+      zhiGuaContainer.innerHTML = `
+        <div class="gua-header">
+          <span>${translations[currentLanguage].changedGua}</span>
+          <span class="${zhiLevel.class}">${zhiLevel.level}</span>
+        </div>
+        <div style="text-align: center;">
+          <div class="gua-name">${zhiInfo.translatedName}</div>
+          <div class="bagua-name">（${translations[currentLanguage].upperGua}：${zhiInfo.upper}，${translations[currentLanguage].lowerGua}：${zhiInfo.lower}）</div>
+          <div class="svg-box">${drawBaguaSVG(zhiList.slice(0,3))}<br>${zhiInfo.upper}</div>
+          <div class="svg-box">${drawBaguaSVG(zhiList.slice(3))}<br>${zhiInfo.lower}</div>
+        </div>
+      `;
+      guaDiv.appendChild(zhiGuaContainer);
+
+      // 显示卦辞和爻辞
+      if (guaExplanations[guaInfo.name] && guaExplanations[guaInfo.name][currentLanguage]) {
+        const { level, guaci, yaoci } = guaExplanations[guaInfo.name][currentLanguage];
+        const explanationContainer = document.createElement("div");
+        explanationContainer.className = "gua-container";
+        
+        const levelClass = getGuaLevel(guaInfo.name).class;
+        
+        explanationContainer.innerHTML = `
+          <div class="gua-header">
+            <span>${translations[currentLanguage].guaExplanation}</span>
+            <span class="${levelClass}">${level}</span>
+          </div>
+          <div class="gua-content" style="text-align: center; font-size: 18px; font-style: italic; margin-bottom: 20px;">
+            ${guaci}
+          </div>
+          <div class="gua-header">${translations[currentLanguage].yaoExplanation}</div>
+          <div class="gua-content">
+            ${yaoList.map((val, idx) => `
+              <div class="yao">${yaoci[idx]}</div>
+            `).join("")}
+          </div>
+        `;
+        guaDiv.appendChild(explanationContainer);
+      } else {
+        // 如果没有对应语言的解释，显示提示信息
+        const explanationContainer = document.createElement("div");
+        explanationContainer.className = "gua-container";
+        explanationContainer.innerHTML = `
+          <div class="gua-header">${translations[currentLanguage].guaExplanation}</div>
+          <div class="gua-content" style="text-align: center;">
+            ${currentLanguage === 'zh' ? '暂无此卦的详细解释' : 
+              currentLanguage === 'en' ? 'No detailed explanation available for this hexagram' :
+              currentLanguage === 'ja' ? 'この卦の詳細な説明はありません' :
+              '이 괘에 대한 자세한 설명이 없습니다'}
+          </div>
+        `;
+        guaDiv.appendChild(explanationContainer);
+      }
+    }
+
+    // 初始化语言选择器
+    document.addEventListener('DOMContentLoaded', function() {
+      const userLang = navigator.language || navigator.userLanguage;
+      if (userLang.startsWith('en')) {
+        document.getElementById('languageSelector').value = 'en';
+        changeLanguage();
+      } else if (userLang.startsWith('ja')) {
+        document.getElementById('languageSelector').value = 'ja';
+        changeLanguage();
+      } else if (userLang.startsWith('ko')) {
+        document.getElementById('languageSelector').value = 'ko';
+        changeLanguage();
+      }
+    });
+  </script>
+</body>
+</html>
